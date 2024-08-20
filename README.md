@@ -12,7 +12,7 @@ Esta parte del curso trata sobre GraphQL, la alternativa de Facebook a REST para
 - [x] 8.2 => a: Servidor GraphQL
 - [x] 8.3 => a: Servidor GraphQL
 - [x] 8.4 => a: Servidor GraphQL
-- [ ] 8.5 => a: Servidor GraphQL
+- [x] 8.5 => a: Servidor GraphQL
 - [ ] 8.6 => a: Servidor GraphQL
 - [ ] 8.7 => a: Servidor GraphQL
 - [ ] 8.8 => b: React y GraphQL
