@@ -14,7 +14,7 @@ const App = () => {
         <button onClick={() => setPage("add")}>add book</button>
       </div>
 
-      <Authors show={page === "authors"} />
+      {page === "authors" && <Authors />}
 
       <Books show={page === "books"} />
 
