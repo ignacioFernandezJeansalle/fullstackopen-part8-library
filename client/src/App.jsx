@@ -16,7 +16,7 @@ const App = () => {
 
       {page === "authors" && <Authors />}
       {page === "books" && <Books />}
-      <NewBook show={page === "add"} />
+      {page === "add" && <NewBook />}
     </div>
   );
 };
