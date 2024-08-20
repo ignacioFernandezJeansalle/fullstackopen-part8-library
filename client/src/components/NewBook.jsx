@@ -1,20 +1,22 @@
 import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { ADD_BOOK, GET_AUTHORS, GET_BOOKS } from "../queries";
 
-const NewBook = (props) => {
+const NewBook = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
 
-  if (!props.show) {
-    return null;
-  }
+  const [addBook, { loading, error }] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: GET_AUTHORS }, { query: GET_BOOKS }],
+  });
 
   const submit = async (event) => {
     event.preventDefault();
 
-    console.log("add book...");
+    addBook({ variables: { title, published: Number(published), author, genres } });
 
     setTitle("");
     setPublished("");
@@ -27,6 +29,9 @@ const NewBook = (props) => {
     setGenres(genres.concat(genre));
     setGenre("");
   };
+
+  if (loading) return <div>Submitting...</div>;
+  if (error) return <div>Submission error! {error.message}</div>;
 
   return (
     <div>
