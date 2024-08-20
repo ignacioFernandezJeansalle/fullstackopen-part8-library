@@ -103,6 +103,7 @@ const typeDefs = `
 
   type Mutation {
     addBook(title: String!, published: Int!, author: String!, genres: [String!]!): Book
+    editAuthor(name: String!, setBornTo: Int!): Author
   }
 `;
 
@@ -140,6 +141,15 @@ const resolvers = {
       }
 
       return newBook;
+    },
+    editAuthor: (root, args) => {
+      const foundAuthorIndex = authors.findIndex((author) => author.name === args.name);
+
+      if (foundAuthorIndex === -1) return null;
+
+      const editedAuthor = { ...authors[foundAuthorIndex], born: args.setBornTo };
+      authors[foundAuthorIndex] = editedAuthor;
+      return editedAuthor;
     },
   },
 };
