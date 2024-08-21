@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { GET_AUTHORS, EDIT_AUTHOR } from "../queries";
 
 const Authors = () => {
-  const [nameAuthor, setNameAuthor] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState("");
   const [bornAuthor, setBornAuthor] = useState("");
 
   const { loading, error, data } = useQuery(GET_AUTHORS);
@@ -15,9 +15,9 @@ const Authors = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    editAuthor({ variables: { name: nameAuthor, setBornTo: Number(bornAuthor) } });
+    editAuthor({ variables: { name: selectedAuthor, setBornTo: Number(bornAuthor) } });
 
-    setNameAuthor("");
+    setSelectedAuthor("");
     setBornAuthor("");
   };
 
@@ -43,11 +43,14 @@ const Authors = () => {
 
       <h2>Set birthyear</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Name: <input type="text" value={nameAuthor} onChange={({ target }) => setNameAuthor(target.value)}></input>
-          </label>
-        </div>
+        <select value={selectedAuthor} onChange={(event) => setSelectedAuthor(event.target.value)}>
+          <option value="">Please choose an option</option>
+          {data.allAuthors.map((a) => (
+            <option key={a.name} value={a.name}>
+              {a.name}
+            </option>
+          ))}
+        </select>
         <div>
           <label>
             Born:{" "}
