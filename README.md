@@ -20,7 +20,7 @@ Esta parte del curso trata sobre GraphQL, la alternativa de Facebook a REST para
 - [x] 8.10 => b: React y GraphQL
 - [x] 8.11 => b: React y GraphQL
 - [x] 8.12 => b: React y GraphQL
-- [ ] 8.13 => c: Administración de bases de datos y usuarios
+- [x] 8.13 => c: Administración de bases de datos y usuarios
 - [ ] 8.14 => c: Administración de bases de datos y usuarios
 - [ ] 8.15 => c: Administración de bases de datos y usuarios
 - [ ] 8.16 => c: Administración de bases de datos y usuarios
