@@ -1,5 +1,23 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+
+import "dotenv/config";
+import mongoose from "mongoose";
+mongoose.set("strictQuery", false);
+import Book from "./models/book.js";
+import Author from "./models/author.js";
+
+console.log("Connecting to MongoDB");
+
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("Error connection to MongoDB: ", error.message);
+  });
+
 import { v4 as uuidv4 } from "uuid";
 
 let authors = [
