@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import Book from "../models/book.js";
 import Author from "../models/author.js";
 
@@ -22,11 +23,34 @@ export const resolvers = {
 
       if (!author) {
         const newAuthor = new Author({ name: args.author, born: 0, books: [] });
-        author = await newAuthor.save();
+
+        try {
+          author = await newAuthor.save();
+        } catch (error) {
+          /* console.error(error); */
+          throw new GraphQLError(error.message, {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              argumentName: "author",
+            },
+          });
+        }
       }
 
       const newBook = new Book({ ...args, author: author._id });
-      const newBookSave = await newBook.save();
+
+      let newBookSave;
+      try {
+        newBookSave = await newBook.save();
+      } catch (error) {
+        /* console.error(error); */
+        throw new GraphQLError(error.message, {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            argumentName: "title",
+          },
+        });
+      }
 
       author.books.push(newBookSave._id);
       await author.save();
