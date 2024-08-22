@@ -1,4 +1,7 @@
 import { GraphQLError } from "graphql";
+import jwt from "jsonwebtoken";
+const { sign: jwtSign } = jwt;
+import User from "../models/user.js";
 import Book from "../models/book.js";
 import Author from "../models/author.js";
 
@@ -11,6 +14,9 @@ export const resolvers = {
       return Book.find(query).populate("author");
     },
     allAuthors: async () => Author.find({}),
+    me: (root, args, context) => {
+      return context.currentUser;
+    },
   },
 
   Author: {
@@ -18,7 +24,48 @@ export const resolvers = {
   },
 
   Mutation: {
-    addBook: async (root, args) => {
+    createUser: async (root, args) => {
+      const newUser = new User({ username: args.username, favoriteGenre: args.favoriteGenre || "" });
+
+      let newUserSave;
+      try {
+        newUserSave = await newUser.save();
+      } catch (error) {
+        throw new GraphQLError(error.message, {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            argumentName: "username",
+          },
+        });
+      }
+
+      return newUserSave;
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username });
+
+      if (!user || args.password !== "secret") {
+        throw new GraphQLError("Wrong credentials", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      const userForToken = { username: user.username, id: user._id };
+
+      return { value: jwtSign(userForToken, process.env.JWT_SECRET) };
+    },
+    addBook: async (root, args, context) => {
+      const { currentUser } = context;
+      if (!currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       let author = await Author.findOne({ name: args.author });
 
       if (!author) {
@@ -57,7 +104,16 @@ export const resolvers = {
 
       return Book.findById(newBookSave._id).populate("author");
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      const { currentUser } = context;
+      if (!currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       let author = await Author.findOne({ name: args.name });
 
       if (!author) return null;
