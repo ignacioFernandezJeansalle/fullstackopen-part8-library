@@ -24,7 +24,7 @@ Esta parte del curso trata sobre GraphQL, la alternativa de Facebook a REST para
 - [x] 8.14 => c: Administración de bases de datos y usuarios
 - [x] 8.15 => c: Administración de bases de datos y usuarios
 - [x] 8.16 => c: Administración de bases de datos y usuarios
-- [ ] 8.17 => d: Iniciar sesión y actualizar la caché
+- [x] 8.17 => d: Iniciar sesión y actualizar la caché
 - [ ] 8.18 => d: Iniciar sesión y actualizar la caché
 - [ ] 8.19 => d: Iniciar sesión y actualizar la caché
 - [ ] 8.20 => d: Iniciar sesión y actualizar la caché
