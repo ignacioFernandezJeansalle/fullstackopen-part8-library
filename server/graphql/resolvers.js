@@ -14,9 +14,7 @@ export const resolvers = {
       return Book.find(query).populate("author");
     },
     allAuthors: async () => Author.find({}),
-    me: (root, args, context) => {
-      return context.currentUser;
-    },
+    me: (root, args, context) => context.currentUser,
   },
 
   Author: {
