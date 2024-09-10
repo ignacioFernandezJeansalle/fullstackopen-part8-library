@@ -3,27 +3,35 @@ import { GET_BOOKS } from "../queries";
 import { useEffect, useState } from "react";
 
 const Books = () => {
-  const [books, setBooks] = useState([]);
   const [genres, setGenres] = useState([]);
   const [filter, setFilter] = useState(null);
-  const { loading, error, data } = useQuery(GET_BOOKS);
+
+  const {
+    loading: filteredBooksLoading,
+    error: filteredBooksError,
+    data: filteredBooksData,
+    refetch: filteredBooksRefetch,
+  } = useQuery(GET_BOOKS, {
+    variables: { genre: filter },
+  });
+
+  const { loading: allBooksLoading, error: allBooksError, data: allBooksData } = useQuery(GET_BOOKS);
 
   useEffect(() => {
-    if (data) {
-      const newBooks = data.allBooks;
-      setBooks(newBooks);
-
-      const newGenres = newBooks
-        .reduce((accumulator, currentValue) => [...accumulator, ...currentValue.genres], [])
-        .filter((element, index, self) => {
-          return self.indexOf(element) === index;
-        });
-      setGenres(newGenres);
+    if (allBooksData) {
+      const newGenres = allBooksData.allBooks.flatMap((book) => book.genres);
+      setGenres([...new Set(newGenres)]);
     }
-  }, [data]);
+  }, [allBooksData]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error! {error.message}</div>;
+  useEffect(() => {
+    filteredBooksRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
+
+  if (allBooksLoading || filteredBooksLoading) return <div>Loading...</div>;
+  if (allBooksError) return <div>Error! {allBooksError.message}</div>;
+  if (filteredBooksError) return <div>Error! {filteredBooksError.message}</div>;
 
   return (
     <div>
@@ -35,18 +43,13 @@ const Books = () => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books
-            .filter((book) => {
-              if (!filter) return true;
-              return book.genres.includes(filter);
-            })
-            .map(({ id, title, author, published }) => (
-              <tr key={id}>
-                <td>{title}</td>
-                <td>{author.name}</td>
-                <td>{published}</td>
-              </tr>
-            ))}
+          {filteredBooksData.allBooks.map(({ id, title, author, published }) => (
+            <tr key={id}>
+              <td>{title}</td>
+              <td>{author.name}</td>
+              <td>{published}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
