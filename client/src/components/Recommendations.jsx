@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 
 const Recommendation = () => {
   const [favoriteGenre, setFavoriteGenre] = useState(null);
-  const [books, setBooks] = useState([]);
 
   const { loading: uLoading, error: uError, data: uData } = useQuery(ME);
+
   const {
     loading: bLoading,
     error: bError,
     data: bData,
+    refetch: bRefetch,
   } = useQuery(GET_BOOKS, {
     variables: { genre: favoriteGenre },
   });
@@ -20,8 +21,9 @@ const Recommendation = () => {
   }, [uData]);
 
   useEffect(() => {
-    if (bData) setBooks(bData.allBooks);
-  }, [bData]);
+    bRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [favoriteGenre]);
 
   if (uLoading || bLoading) return <div>Loading...</div>;
   if (uError) return <div>Error! {uError.message}</div>;
@@ -35,24 +37,22 @@ const Recommendation = () => {
           books in your favorite genre <b>{favoriteGenre}</b>
         </p>
       )}
-      {books && (
-        <table>
-          <tbody>
-            <tr>
-              <th></th>
-              <th>author</th>
-              <th>published</th>
+      <table>
+        <tbody>
+          <tr>
+            <th></th>
+            <th>author</th>
+            <th>published</th>
+          </tr>
+          {bData.allBooks.map(({ id, title, author, published }) => (
+            <tr key={id}>
+              <td>{title}</td>
+              <td>{author.name}</td>
+              <td>{published}</td>
             </tr>
-            {books.map(({ id, title, author, published }) => (
-              <tr key={id}>
-                <td>{title}</td>
-                <td>{author.name}</td>
-                <td>{published}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -29,7 +29,7 @@ Esta parte del curso trata sobre GraphQL, la alternativa de Facebook a REST para
 - [x] 8.19 => d: Iniciar sesión y actualizar la caché
 - [x] 8.20 => d: Iniciar sesión y actualizar la caché
 - [x] 8.21 => d: Iniciar sesión y actualizar la caché
-- [ ] 8.22 => d: Iniciar sesión y actualizar la caché
+- [x] 8.22 => d: Iniciar sesión y actualizar la caché
 - [ ] 8.23 => e: Fragmentos y suscripciones
 - [ ] 8.24 => e: Fragmentos y suscripciones
 - [ ] 8.25 => e: Fragmentos y suscripciones
