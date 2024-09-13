@@ -1,4 +1,6 @@
 import { GraphQLError } from "graphql";
+import { PubSub } from "graphql-subscriptions";
+const pubsub = new PubSub();
 import jwt from "jsonwebtoken";
 const { sign: jwtSign } = jwt;
 import User from "../models/user.js";
@@ -100,7 +102,11 @@ export const resolvers = {
       author.books.push(newBookSave._id);
       await author.save();
 
-      return Book.findById(newBookSave._id).populate("author");
+      const bookAdded = await Book.findById(newBookSave._id).populate("author");
+
+      pubsub.publish("BOOK_ADDED", { bookAdded: bookAdded });
+
+      return bookAdded;
     },
     editAuthor: async (root, args, context) => {
       const { currentUser } = context;
@@ -118,6 +124,12 @@ export const resolvers = {
 
       author.born = args.setBornTo;
       return author.save();
+    },
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(["BOOK_ADDED"]),
     },
   },
 };
