@@ -32,13 +32,12 @@ const start = async () => {
   const app = express();
   const httpServer = http.createServer(app);
 
-  const schema = makeExecutableSchema({ typeDefs, resolvers });
-
   const wsServer = new WebSocketServer({
     server: httpServer,
     path: "/",
   });
 
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
   const serverCleanup = useServer({ schema }, wsServer);
 
   const server = new ApolloServer({
