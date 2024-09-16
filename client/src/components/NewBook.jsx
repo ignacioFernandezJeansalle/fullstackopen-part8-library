@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { ADD_BOOK, GET_AUTHORS, GET_BOOKS } from "../queries";
+import { useMutation, useSubscription } from "@apollo/client";
+import { ADD_BOOK, GET_AUTHORS, GET_BOOKS, BOOK_ADDED } from "../queries";
 
 const NewBook = () => {
   const [title, setTitle] = useState("");
@@ -11,6 +11,12 @@ const NewBook = () => {
 
   const [addBook, { loading, error }] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: GET_AUTHORS }, { query: GET_BOOKS }],
+  });
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      console.log(data);
+    },
   });
 
   const submit = async (event) => {
