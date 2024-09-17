@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useApolloClient, useSubscription } from "@apollo/client";
-
-import { BOOK_ADDED } from "./queries";
+import { useApolloClient } from "@apollo/client";
 
 import Authors from "./components/Authors";
 import Books from "./components/Books";
@@ -13,12 +11,6 @@ const App = () => {
   const [token, setToken] = useState(null);
   const [page, setPage] = useState("authors");
   const client = useApolloClient();
-
-  useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
-      console.log(data);
-    },
-  });
 
   useEffect(() => {
     const token = localStorage.getItem("library-user-token");

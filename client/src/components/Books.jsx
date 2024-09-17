@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client";
-import { GET_BOOKS } from "../queries";
+import { useQuery, useSubscription } from "@apollo/client";
+import { GET_BOOKS, BOOK_ADDED } from "../queries";
 import { useEffect, useState } from "react";
 
 const Books = () => {
@@ -28,6 +28,19 @@ const Books = () => {
     filteredBooksRefetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded;
+      console.log(addedBook.title);
+
+      client.cache.updateQuery({ query: GET_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook),
+        };
+      });
+    },
+  });
 
   if (allBooksLoading || filteredBooksLoading) return <div>Loading...</div>;
   if (allBooksError) return <div>Error! {allBooksError.message}</div>;
